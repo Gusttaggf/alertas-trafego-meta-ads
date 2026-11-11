@@ -8,13 +8,15 @@ Protótipo clicável (dados de exemplo): https://claude.ai/artifact/W1cnoV9VBHqL
 
 - **Agenda:** cada gestor vê os avisos do dia em três horários, **07:00, 12:00 e 16:00**, com navegação pela semana.
 - **Verificação:** o sistema consulta o Meta **de hora em hora**, mas só dispara os avisos nos três horários (junta o que achou desde o horário anterior).
-- **Alertas:** saldo acabando, custo por resultado alto (venda, mensagem, lead) e gasto do dia acima do orçamento diário. "Conta com problema" e "gasto sem resultado": decidir depois.
+- **Alertas:** saldo acabando, custo por resultado alto (venda, mensagem, lead) e gasto do dia acima do orçamento diário.
+- **Ruim há 2 semanas:** analisa campanhas, conjuntos e anúncios. Avisa quando o custo por resultado ficou acima da média da conta (padrão +40%) **nas duas últimas semanas**, contando só o que gastou o mínimo no período (padrão R$ 150). Aparece uma vez por dia, no horário das 07:00, com o custo de cada semana. Critério a confirmar com o Gustavo. "Conta com problema" e "gasto sem resultado": decidir depois.
 - **Resolvido:** o gestor marca cada aviso como resolvido. Se resolveu, aquela conta não recebe o mesmo tipo de aviso de novo nos horários seguintes do mesmo dia.
 - **Notificação no celular:** o gestor vê os avisos no app e recebe notificação no celular nos horários (push do app instalado na tela inicial; Telegram como alternativa).
 - **Papéis:**
   - **Administrador:** controle total (pessoas, papéis, equipes, contas, configurações).
   - **Head:** manda na equipe dele (cada gestor pertence a um único head), distribui as contas entre os gestores, vê as pendências da equipe por cima e o detalhe ao clicar no gestor. Não recebe avisos.
   - **Gestor:** recebe e resolve os avisos das contas pelas quais é responsável.
+- **Tema:** claro, escuro ou automático (segue o aparelho), escolhido por cada pessoa.
 - **Visual:** identidade da Agência Estrategista (Canva), aplicada no protótipo. Cores, fontes e logos em `public/marca/`.
 
 ## Etapas
