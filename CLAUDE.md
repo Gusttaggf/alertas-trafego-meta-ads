@@ -31,6 +31,17 @@ Sistema de alertas para a equipe de gestão de tráfego do Gustavo. Uma conta m�
 
 Destinatários de cada alerta = responsáveis da conta + quem está com Contas = "Todas", filtrado pelas caixinhas de cada pessoa. Telegram vincula por link `t.me/<bot>?start=<código>`, processado por getUpdates a cada 5 minutos.
 
+## App (pasta `app/`, em construção)
+
+**Gestor Estrategista**: app da Agência Estrategista para a equipe, com agenda de avisos (07h, 12h, 16h) das contas do Meta e do Google Ads. Next.js 16 (App Router, `src/proxy.ts` no lugar de middleware) + Supabase. Decisões do Gustavo e etapas em `app/ROADMAP.md`; configuração em `app/README.md`; protótipo em https://claude.ai/artifact/W1cnoV9VBHqLVhj6Fx3rGu (fonte em HTML único, refazer a partir do app quando mudar).
+
+- Pronto: login com Google (novos ficam "aguardando acesso"; `ADMIN_EMAILS` vira administrador), papéis administrador/head/gestor, pessoas e equipes, distribuição de contas (admin → head → gestor), conexão do Meta só do administrador (`/api/meta/conectar` e `/api/meta/retorno`, token de 60 dias em `meta_conexoes`), importação das contas do Meta, configurações.
+- Segurança: o navegador não lê o banco. Todo acesso é pelo servidor com `service_role`, conferindo `src/lib/permissoes.ts`. Tabelas com RLS ligado e sem políticas. Ao criar tabela nova, siga o mesmo padrão (migração em `app/supabase/migrations/`).
+- Cuidado com o cache de requisição do Next: duas leituras GET iguais na mesma renderização devolvem a mesma resposta. Depois de gravar, use o retorno da gravação (`.select()`), não uma leitura nova.
+- Regras de saldo/status portadas em `app/src/lib/saldo.ts`: se mudar `lerSaldo_`/`valorDoTexto_` no `.gs`, mude lá também.
+- Identidade visual (cores, fontes, logos) em `app/public/marca/`.
+- Verificações: `cd app && npm test && npm run typecheck && npm run build`.
+
 ## Testes
 
 `node tests/rota.js`, `tests/criativos.js`, `tests/orc.js`, `tests/run.js`: simulam a planilha e a API com dados falsos (sem rede). Rode todos antes de entregar uma versão nova e confira `node --check` no código.
@@ -39,7 +50,7 @@ Destinatários de cada alerta = responsáveis da conta + quem está com Contas =
 
 - Contas da Lovini (1422830469231196 e 180387504) deram erro #200 de permissão: precisa autorizar a BM da Lovini ao gerar o token ou adicionar o app na BM.
 - Bsy Oficial: conta de anúncio não encontrada, linha sem ID.
-- Ideias combinadas para depois: resumo diário para Head/Líder master; WhatsApp (Z-API ou API oficial); token de usuário do sistema que não expira; passar o sistema para outros gestores; se virar produto, migrar para app (Lovable + Supabase).
+- Ideias combinadas para depois: resumo diário para Head/Líder master; WhatsApp (Z-API ou API oficial); token de usuário do sistema que não expira; passar o sistema para outros gestores; app em `app/` (Next.js + Supabase, ver ROADMAP).
 
 ## Ao mudar colunas
 
