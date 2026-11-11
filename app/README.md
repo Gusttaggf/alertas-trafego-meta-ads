@@ -23,9 +23,24 @@ O navegador nunca lê o banco direto. Todo acesso passa pelo servidor (chave `se
 4. **Authentication > Configuração de URL:** *Site URL* = endereço do app. Em *Redirect URLs*, adicione `https://SEU-APP.vercel.app/auth/callback` (e `http://localhost:3000/auth/callback` para testes no computador).
 
 ### 2. Google Cloud (login com Google)
-1. console.cloud.google.com: crie um projeto (por exemplo, "Gestor Estrategista"). Não precisa ativar faturamento nem avaliação gratuita.
-2. **APIs e serviços > Tela de consentimento OAuth** (ou "Google Auth Platform"): tipo **Externo** (os gestores usam Gmail comum). Nome do app: **Gestor Estrategista**, e-mail de suporte (sem logo por enquanto: logo exige verificação da marca). Escopos: só `email`, `profile` e `openid`, que não precisam de análise do Google. Publique o app (status "Em produção").
-3. **Credenciais > Criar credenciais > ID do cliente OAuth > Aplicativo da Web.** Em *URIs de redirecionamento autorizados*, cole a Callback URL do Supabase. Copie o ID e a chave secreta para o Supabase (passo 1.2).
+Gratuito: não precisa ativar faturamento nem a avaliação gratuita (se aparecer o convite, feche).
+
+**2.1. Projeto**
+1. console.cloud.google.com > seletor de projeto (no alto) > **Novo projeto**.
+2. Nome: `Gestor Estrategista` (ID `gestor-estrategista`). Se aparecer uma organização, pode deixar a que vier. **Criar** e selecione o projeto.
+
+**2.2. Tela de permissão** (o que a pessoa vê ao clicar em "Entrar com o Google")
+1. Menu ☰ > **APIs e serviços > Tela de permissão OAuth** (ou **Google Auth Platform**) > **Primeiros passos**.
+2. Nome do app: `Gestor Estrategista`. E-mail de suporte e de contato: o seu. **Público-alvo: Externo** (os gestores usam Gmail comum; "Interno" deixaria entrar só e-mails da organização). Aceite os termos > **Criar**.
+3. Não envie logo por enquanto (logo exige verificação da marca).
+4. **Versão de apresentação:** deixe o status em **Testando**. Em **Público-alvo > Usuários de teste > Adicionar usuários**, coloque o seu Gmail e o de quem vai testar (até 100). Só esses e-mails conseguem entrar; na entrada aparece um aviso de app em teste, é só clicar em **Continuar**.
+5. **Para liberar para toda a equipe (depois):** com o app publicado na Vercel, preencha na página de **Branding** o endereço do app, a política de privacidade (página do app) e o domínio autorizado, e clique em **Publicar app**. Como o app só pede nome e e-mail, o Google não exige análise.
+
+**2.3. Credenciais**
+1. **Clientes > Criar cliente** (ou **Credenciais > Criar credenciais > ID do cliente OAuth**).
+2. Tipo: **Aplicativo da Web**. Nome: `Gestor Estrategista Web`.
+3. **URIs de redirecionamento autorizados > Adicionar URI**: cole a Callback URL do Supabase (Authentication > Sign In / Providers > Google), no formato `https://SEU-PROJETO.supabase.co/auth/v1/callback`.
+4. **Criar**. Copie e guarde o **ID do cliente** e a **Chave secreta do cliente** (a chave pode aparecer só uma vez). Eles vão no Supabase (passo 1.2).
 
 ### 3. App do Meta "Alertas de Tráfego"
 1. **Login do Facebook (para Empresas) > Configurações > URIs de redirecionamento do OAuth válidos:** adicione `https://SEU-APP.vercel.app/api/meta/retorno`. A Callback URL antiga do Supabase pode ficar ou sair.
