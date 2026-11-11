@@ -40,6 +40,13 @@ Protótipo clicável (dados de exemplo): https://claude.ai/artifact/W1cnoV9VBHqL
 - **Token de desenvolvedor:** na conta de administrador (MCC) do Google Ads, em Administrador > Central de API. O Google analisa o pedido e pode levar alguns dias.
 - **Projeto no Google Cloud** com a Google Ads API ativada e um cliente OAuth (ID e chave secreta) para o administrador conectar a conta.
 
+## Situação atual: versão de apresentação
+O Gustavo está montando o app nas contas pessoais dele (Gmail, Supabase, Vercel, Google Cloud, app do Meta) para apresentar à agência. Se aprovado, passa tudo para o administrador da agência:
+- **Google Cloud:** adicionar o administrador como Proprietário do projeto (IAM) ou ele cria um cliente OAuth próprio e troca ID e chave secreta no Supabase.
+- **Supabase e Vercel:** convidar o administrador e transferir a propriedade.
+- **Meta:** administrador do app "Alertas de Tráfego" ou reconectar o Meta pelo botão do app com o Facebook dele.
+- **`ADMIN_EMAILS`:** trocar para o e-mail dele.
+
 ## Decisões em aberto
 - "Conta com problema" e "gasto sem resultado" entram ou não.
 - Token da verificação automática: o do login (vence em 60 dias) ou token de usuário do sistema da BM (não expira).
