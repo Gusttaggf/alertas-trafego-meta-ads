@@ -12,6 +12,7 @@ Protótipo clicável (dados de exemplo): https://claude.ai/artifact/W1cnoV9VBHqL
 - **Ruim há 2 semanas:** analisa campanhas, conjuntos e anúncios. Avisa quando o custo por resultado ficou acima da média da conta (padrão +40%) **nas duas últimas semanas**, contando só o que gastou o mínimo no período (padrão R$ 150). Aparece uma vez por dia, no horário das 07:00, com o custo de cada semana. Critério a confirmar com o Gustavo. "Conta com problema" e "gasto sem resultado": decidir depois.
 - **Resolvido:** o gestor marca cada aviso como resolvido. Se resolveu, aquela conta não recebe o mesmo tipo de aviso de novo nos horários seguintes do mesmo dia.
 - **Notificação no celular:** o gestor vê os avisos no app e recebe notificação no celular nos horários (push do app instalado na tela inicial; Telegram como alternativa).
+- **Contas de anúncio:** só o **administrador** conecta a conta que enxerga todas as contas de anúncio (conta mãe). Ele passa cada conta para um **head**; o head escolhe o **gestor** da equipe dele (o administrador também pode escolher). Se o gestor muda de equipe, as contas dele vão junto. Os demais só entram no app, sem conectar nada.
 - **Papéis:**
   - **Administrador:** controle total (pessoas, papéis, equipes, contas, configurações).
   - **Head:** manda na equipe dele (cada gestor pertence a um único head), distribui as contas entre os gestores, vê as pendências da equipe por cima e o detalhe ao clicar no gestor. Não recebe avisos.
