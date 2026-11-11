@@ -24,7 +24,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
       <nav className="side" aria-label="Menu">
         <div className="brand">
           <span className="logo" role="img" aria-label="Agência Estrategista" />
-          <small>Alertas de tráfego · {NOME_PAPEL[eu.papel]}</small>
+          <small>Gestor Estrategista · {NOME_PAPEL[eu.papel]}</small>
         </div>
         {menu.map(([href, texto, n]) => <ItemMenu key={href} href={href} texto={texto} numero={n} />)}
         <TemaToggle inicial={tema} />

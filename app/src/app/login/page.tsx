@@ -7,7 +7,7 @@ export default async function Login({ searchParams }: { searchParams: Promise<{ 
       <div className="cartao-login">
         <span className="logo" role="img" aria-label="Agência Estrategista" />
         <div>
-          <h1>Alertas de Tráfego</h1>
+          <h1>Gestor Estrategista</h1>
           <p className="muted">Entre com o e-mail do Google que você usa na agência.</p>
         </div>
         <BotaoGoogle />

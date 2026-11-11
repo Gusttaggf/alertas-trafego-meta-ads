@@ -1,4 +1,4 @@
-# Roteiro do app
+# Roteiro do Gestor Estrategista
 
 Público: só a equipe da agência (sem cobrança, sem várias empresas).
 

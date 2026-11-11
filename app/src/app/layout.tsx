@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Alertas de Tráfego · Agência Estrategista',
+  title: 'Gestor Estrategista',
   description: 'Agenda de avisos das contas de anúncio do Meta e do Google Ads para a equipe.',
 };
 

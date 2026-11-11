@@ -1,6 +1,6 @@
-# App Alertas de Tráfego (Next.js + Supabase)
+# Gestor Estrategista (Next.js + Supabase)
 
-App da Agência Estrategista para a equipe de tráfego: agenda de avisos das contas do Meta e do Google Ads. A planilha (`../src/AlertasTrafego.gs`) continua funcionando enquanto o app é construído. O que já está pronto e o que vem depois: `ROADMAP.md`. Protótipo clicável: https://claude.ai/artifact/W1cnoV9VBHqLVhj6Fx3rGu
+App da Agência Estrategista para a equipe de tráfego, chamado **Gestor Estrategista**: agenda de avisos das contas do Meta e do Google Ads. A planilha (`../src/AlertasTrafego.gs`) continua funcionando enquanto o app é construído. O que já está pronto e o que vem depois: `ROADMAP.md`. Protótipo clicável: https://claude.ai/artifact/W1cnoV9VBHqLVhj6Fx3rGu
 
 ## O que já funciona
 
@@ -23,8 +23,8 @@ O navegador nunca lê o banco direto. Todo acesso passa pelo servidor (chave `se
 4. **Authentication > Configuração de URL:** *Site URL* = endereço do app. Em *Redirect URLs*, adicione `https://SEU-APP.vercel.app/auth/callback` (e `http://localhost:3000/auth/callback` para testes no computador).
 
 ### 2. Google Cloud (login com Google)
-1. console.cloud.google.com, com o e-mail do Workspace da agência: crie um projeto (por exemplo, "Alertas de Tráfego").
-2. **APIs e serviços > Tela de consentimento OAuth** (ou "Google Auth Platform"): tipo **Externo** (os gestores usam Gmail comum). Nome do app, e-mail de suporte e logo da agência. Escopos: só `email`, `profile` e `openid`, que não precisam de análise do Google. Publique o app (status "Em produção").
+1. console.cloud.google.com: crie um projeto (por exemplo, "Gestor Estrategista"). Não precisa ativar faturamento nem avaliação gratuita.
+2. **APIs e serviços > Tela de consentimento OAuth** (ou "Google Auth Platform"): tipo **Externo** (os gestores usam Gmail comum). Nome do app: **Gestor Estrategista**, e-mail de suporte (sem logo por enquanto: logo exige verificação da marca). Escopos: só `email`, `profile` e `openid`, que não precisam de análise do Google. Publique o app (status "Em produção").
 3. **Credenciais > Criar credenciais > ID do cliente OAuth > Aplicativo da Web.** Em *URIs de redirecionamento autorizados*, cole a Callback URL do Supabase. Copie o ID e a chave secreta para o Supabase (passo 1.2).
 
 ### 3. App do Meta "Alertas de Tráfego"
