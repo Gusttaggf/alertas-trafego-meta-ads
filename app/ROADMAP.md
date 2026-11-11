@@ -15,7 +15,7 @@ Protótipo clicável (dados de exemplo): https://claude.ai/artifact/W1cnoV9VBHqL
   - **Administrador:** controle total (pessoas, papéis, equipes, contas, configurações).
   - **Head:** manda na equipe dele (cada gestor pertence a um único head), distribui as contas entre os gestores, vê as pendências da equipe por cima e o detalhe ao clicar no gestor. Não recebe avisos.
   - **Gestor:** recebe e resolve os avisos das contas pelas quais é responsável.
-- **Visual:** seguir a identidade visual da agência (Canva).
+- **Visual:** identidade da Agência Estrategista (Canva), aplicada no protótipo. Cores, fontes e logos em `public/marca/`.
 
 ## Etapas
 
