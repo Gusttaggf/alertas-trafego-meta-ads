@@ -13,6 +13,7 @@ Protótipo clicável (dados de exemplo): https://claude.ai/artifact/W1cnoV9VBHqL
 - **Resolvido:** o gestor marca cada aviso como resolvido. Se resolveu, aquela conta não recebe o mesmo tipo de aviso de novo nos horários seguintes do mesmo dia.
 - **Notificação no celular:** o gestor vê os avisos no app e recebe notificação no celular nos horários (push do app instalado na tela inicial; Telegram como alternativa).
 - **Contas de anúncio:** só o **administrador** conecta a conta que enxerga todas as contas de anúncio (conta mãe). Ele passa cada conta para um **head**; o head escolhe o **gestor** da equipe dele (o administrador também pode escolher). Se o gestor muda de equipe, as contas dele vão junto. Os demais só entram no app, sem conectar nada.
+- **Google Ads:** além do Meta. O administrador conecta a **conta de administrador (MCC)** do Google Ads, que enxerga todas as contas. Os mesmos avisos valem para as duas plataformas, e cada aviso mostra de qual plataforma é (no Google: campanha, grupo de anúncios e anúncio). Saldo no Google: contas com pagamento manual (pré-pago) ou orçamento da conta. Gasto acima do diário no Google tem tolerância própria (padrão 100%), porque o Google pode gastar até 2x o diário num dia e compensa no mês.
 - **Papéis:**
   - **Administrador:** controle total (pessoas, papéis, equipes, contas, configurações).
   - **Head:** manda na equipe dele (cada gestor pertence a um único head), distribui as contas entre os gestores, vê as pendências da equipe por cima e o detalhe ao clicar no gestor. Não recebe avisos.
@@ -28,10 +29,16 @@ Protótipo clicável (dados de exemplo): https://claude.ai/artifact/W1cnoV9VBHqL
 | 2. Pessoas, equipes e contas | Tabelas de pessoas (papel, head), contas (gestor responsável) e configurações; telas de Pessoas, Distribuir contas e Configurações; RLS por papel |
 | 3. Verificação e avisos | Checagem de hora em hora (Supabase Cron), regras portadas do `.gs` com testes, tabela de avisos com horário e status (pendente/resolvido) |
 | 4. Agenda e visão do head | Agenda do gestor (semana + 07/12/16h), cartões por gestor para o head, visão geral do administrador |
+| 4b. Google Ads | Conexão com a conta de administrador (MCC), importação das contas e os mesmos avisos usando a API do Google Ads |
 | 5. Notificação no celular | App instalável (PWA) com push nos três horários |
 | 6. Desligar a planilha | Rodar em paralelo, comparar e desativar o gatilho do Apps Script |
 
+## O que o Google Ads exige (fazer antes da etapa 4b)
+- **Token de desenvolvedor:** na conta de administrador (MCC) do Google Ads, em Administrador > Central de API. O Google analisa o pedido e pode levar alguns dias.
+- **Projeto no Google Cloud** com a Google Ads API ativada e um cliente OAuth (ID e chave secreta) para o administrador conectar a conta.
+
 ## Decisões em aberto
+- Login da equipe: com Facebook (hoje) ou com Google (só o administrador conecta o Facebook e o Google Ads).
 - "Conta com problema" e "gasto sem resultado" entram ou não.
 - Token da verificação automática: o do login (vence em 60 dias) ou token de usuário do sistema da BM (não expira).
 - Contas da Lovini continuam com erro #200 até a BM autorizar o app.
