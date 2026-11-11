@@ -28,8 +28,8 @@ Protótipo clicável (dados de exemplo): https://claude.ai/artifact/W1cnoV9VBHqL
 | Etapa | O que entra |
 |---|---|
 | 1. Login com Facebook ✅ | Entrar com o Facebook, token de 60 dias guardado no servidor, lista de contas |
-| 1b. Login com Google | Trocar o login para Google; conexão do Meta vira botão só do administrador (reaproveita a troca por token de 60 dias) |
-| 2. Pessoas, equipes e contas | Tabelas de pessoas (papel, head), contas (gestor responsável) e configurações; telas de Pessoas, Distribuir contas e Configurações; RLS por papel |
+| 1b. Login com Google ✅ | Login com Google; conexão do Meta é botão só do administrador (token de 60 dias) |
+| 2. Pessoas, equipes e contas ✅ | Tabelas de pessoas (papel, head), contas (gestor responsável) e configurações; telas de Pessoas, Distribuir contas e Configurações; RLS por papel |
 | 3. Verificação e avisos | Checagem de hora em hora (Supabase Cron), regras portadas do `.gs` com testes, tabela de avisos com horário e status (pendente/resolvido) |
 | 4. Agenda e visão do head | Agenda do gestor (semana + 07/12/16h), cartões por gestor para o head, visão geral do administrador |
 | 4b. Google Ads | Conexão com a conta de administrador (MCC), importação das contas e os mesmos avisos usando a API do Google Ads |

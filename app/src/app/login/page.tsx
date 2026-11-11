@@ -1,20 +1,18 @@
-import BotaoFacebook from './BotaoFacebook';
+import BotaoGoogle from './BotaoGoogle';
 
-const MENSAGENS: Record<string, string> = {
-  sem_token: 'O Facebook não devolveu a permissão de anúncios. Entre de novo e aceite o acesso às contas de anúncio.',
-  falhou: 'Não foi possível concluir o login. Tente de novo.',
-};
-
-export default async function Login({ searchParams }: { searchParams: Promise<{ erro?: string; detalhe?: string }> }) {
-  const { erro, detalhe } = await searchParams;
+export default async function Login({ searchParams }: { searchParams: Promise<{ erro?: string }> }) {
+  const { erro } = await searchParams;
   return (
-    <main>
-      <div className="cartao" style={{ maxWidth: 440, margin: '10vh auto 0' }}>
-        <h1>Alertas de Tráfego</h1>
-        <p className="suave">Entre com o Facebook que tem acesso às contas de anúncio da equipe.</p>
-        <BotaoFacebook />
-        {erro && <p className="erro">{MENSAGENS[erro] || MENSAGENS.falhou}{detalhe ? ` (${detalhe})` : ''}</p>}
+    <div className="centro">
+      <div className="cartao-login">
+        <span className="logo" role="img" aria-label="Agência Estrategista" />
+        <div>
+          <h1>Alertas de Tráfego</h1>
+          <p className="muted">Entre com o e-mail do Google que você usa na agência.</p>
+        </div>
+        <BotaoGoogle />
+        {erro && <p className="aviso erro">Não foi possível entrar: {erro}</p>}
       </div>
-    </main>
+    </div>
   );
 }

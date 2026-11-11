@@ -33,6 +33,24 @@ export async function graphTodos<T>(caminho: string, token: string, params: Reco
   return dados;
 }
 
+/** Endereço do Facebook para o administrador autorizar o acesso às contas de anúncio. */
+export function urlAutorizacao(redirectUri: string, state: string) {
+  const qs = new URLSearchParams({ client_id: env('META_APP_ID'), redirect_uri: redirectUri, state, response_type: 'code' });
+  // App do tipo Empresa usa a configuração de login; os demais pedem a permissão direto.
+  if (process.env.META_CONFIG_ID) qs.set('config_id', process.env.META_CONFIG_ID);
+  else qs.set('scope', 'ads_read');
+  return `https://www.facebook.com/${versao()}/dialog/oauth?${qs}`;
+}
+
+/** Troca o código que o Facebook devolve por um token curto. */
+export async function trocarCodigo(code: string, redirectUri: string) {
+  const qs = new URLSearchParams({
+    client_id: env('META_APP_ID'), client_secret: env('META_APP_SECRET'), redirect_uri: redirectUri, code,
+  });
+  const r = await buscarJson<{ access_token: string }>(`https://graph.facebook.com/${versao()}/oauth/access_token?${qs}`);
+  return r.access_token;
+}
+
 /** Troca o token curto do login (1–2 h) por um de ~60 dias. */
 export async function tokenLongo(tokenCurto: string) {
   const qs = new URLSearchParams({
@@ -61,14 +79,7 @@ export async function salvarConexao(userId: string, tokenCurto: string) {
   if (error) throw new Error('Não consegui salvar a conexão com o Meta: ' + error.message);
 }
 
-export async function lerConexao(userId: string) {
-  const { data, error } = await supabaseAdmin()
-    .from('meta_conexoes').select('token, fb_nome, expira_em').eq('user_id', userId).maybeSingle();
-  if (error) throw new Error(error.message);
-  return data as { token: string; fb_nome: string; expira_em: string | null } | null;
-}
-
-export function listarContas(token: string) {
+export function listarContasMeta(token: string) {
   return graphTodos<ContaMeta>('me/adaccounts', token, {
     fields: 'name,account_id,account_status,currency,is_prepay_account,spend_cap,amount_spent,funding_source_details',
     limit: 200,

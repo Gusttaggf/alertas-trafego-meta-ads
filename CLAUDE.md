@@ -33,7 +33,14 @@ Destinatários de cada alerta = responsáveis da conta + quem está com Contas =
 
 ## App (pasta `app/`, em construção)
 
-Versão em aplicativo para uso só da equipe: Next.js 16 (App Router, `src/proxy.ts` no lugar de middleware) + Supabase (Auth com Facebook e Postgres). Etapa 1 pronta: login com Facebook (`ads_read`), troca por token de 60 dias em `/auth/callback`, gravado em `meta_conexoes` (RLS sem políticas, só `service_role` lê), e tela `/contas` com situação e saldo. Regras de saldo/status portadas em `app/src/lib/saldo.ts`: se mudar `lerSaldo_`/`valorDoTexto_` no `.gs`, mude lá também. Configuração em `app/README.md`, próximas etapas em `app/ROADMAP.md`. Verificações: `cd app && npm test && npm run typecheck && npm run build`.
+App da Agência Estrategista para a equipe: agenda de avisos (07h, 12h, 16h) das contas do Meta e do Google Ads. Next.js 16 (App Router, `src/proxy.ts` no lugar de middleware) + Supabase. Decisões do Gustavo e etapas em `app/ROADMAP.md`; configuração em `app/README.md`; protótipo em https://claude.ai/artifact/W1cnoV9VBHqLVhj6Fx3rGu (fonte em HTML único, refazer a partir do app quando mudar).
+
+- Pronto: login com Google (novos ficam "aguardando acesso"; `ADMIN_EMAILS` vira administrador), papéis administrador/head/gestor, pessoas e equipes, distribuição de contas (admin → head → gestor), conexão do Meta só do administrador (`/api/meta/conectar` e `/api/meta/retorno`, token de 60 dias em `meta_conexoes`), importação das contas do Meta, configurações.
+- Segurança: o navegador não lê o banco. Todo acesso é pelo servidor com `service_role`, conferindo `src/lib/permissoes.ts`. Tabelas com RLS ligado e sem políticas. Ao criar tabela nova, siga o mesmo padrão (migração em `app/supabase/migrations/`).
+- Cuidado com o cache de requisição do Next: duas leituras GET iguais na mesma renderização devolvem a mesma resposta. Depois de gravar, use o retorno da gravação (`.select()`), não uma leitura nova.
+- Regras de saldo/status portadas em `app/src/lib/saldo.ts`: se mudar `lerSaldo_`/`valorDoTexto_` no `.gs`, mude lá também.
+- Identidade visual (cores, fontes, logos) em `app/public/marca/`.
+- Verificações: `cd app && npm test && npm run typecheck && npm run build`.
 
 ## Testes
 

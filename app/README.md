@@ -1,47 +1,50 @@
 # App Alertas de Tráfego (Next.js + Supabase)
 
-Versão em aplicativo do sistema da planilha, para uso da equipe. A planilha (`../src/AlertasTrafego.gs`) continua funcionando enquanto o app é construído.
+App da Agência Estrategista para a equipe de tráfego: agenda de avisos das contas do Meta e do Google Ads. A planilha (`../src/AlertasTrafego.gs`) continua funcionando enquanto o app é construído. O que já está pronto e o que vem depois: `ROADMAP.md`. Protótipo clicável: https://claude.ai/artifact/W1cnoV9VBHqLVhj6Fx3rGu
 
-**Etapa 1 (esta):** entrar com o Facebook, guardar o acesso ao Meta com segurança e listar as contas de anúncio com situação e saldo (mesma regra da planilha: pré-pago, limite de gastos ou "Pagamento recorrente").
+## O que já funciona
 
-## Como funciona o login
+- **Login com Google** para todos. Quem entra pela primeira vez fica **aguardando acesso**. Os e-mails em `ADMIN_EMAILS` entram como administrador.
+- **Pessoas:** o administrador define quem é head e quem é gestor (e de qual equipe). O head coloca quem está aguardando como gestor da equipe dele e pode tirar gestores da equipe.
+- **Contas:** o administrador conecta o Meta (Facebook da conta mãe), importa as contas e passa cada uma para um head. O head escolhe o gestor.
+- **Visão geral** (administrador), **Minha equipe** (head), **Minhas contas** (gestor), **Configurações** (horários e limites dos avisos).
+- Tema claro, escuro ou automático, com a identidade visual da agência.
 
-1. A pessoa clica em **Entrar com o Facebook** e aceita a permissão `ads_read`.
-2. O Supabase cria a sessão; na volta (`/auth/callback`) o servidor troca o token curto do Facebook por um de ~60 dias e grava na tabela `meta_conexoes`.
-3. Essa tabela tem RLS ligado e nenhuma política: só o servidor (chave `service_role`) lê o token. Nada vai para o navegador.
-4. Quando o token vencer, a tela de contas pede para sair e entrar de novo.
+## Segurança
+
+O navegador nunca lê o banco direto. Todo acesso passa pelo servidor (chave `service_role`), que confere as permissões em `src/lib/permissoes.ts` (testado em `tests/permissoes.test.ts`). As tabelas têm RLS ligado e nenhuma política para `anon`/`authenticated`.
 
 ## Configuração (uma vez)
 
 ### 1. Supabase
-1. Crie um projeto em supabase.com.
-2. **SQL Editor**: rode `supabase/migrations/0001_meta_conexoes.sql`.
-3. **Authentication > Sign In / Providers > Facebook** (no Supabase): ative e cole o **ID do app** e a **Chave secreta do app**, que ficam no Meta em developers.facebook.com > seu app > Configurações do app > Básico. Nessa mesma tela do Supabase, copie a *Callback URL* (`https://SEU-PROJETO.supabase.co/auth/v1/callback`): ela vai no passo 2.2, no Meta. Salve.
-4. **Authentication > URL Configuration**: Site URL = endereço do app; em Redirect URLs adicione `http://localhost:3000/auth/callback` e `https://SEU-APP.vercel.app/auth/callback`.
+1. **SQL Editor:** rode, nesta ordem, `supabase/migrations/0001_meta_conexoes.sql` e `supabase/migrations/0002_pessoas_contas.sql`.
+2. **Authentication > Sign In / Providers > Google:** ative e cole o *Client ID* e o *Client Secret* do passo 2. Copie a *Callback URL* (`https://SEU-PROJETO.supabase.co/auth/v1/callback`). Salve.
+3. **Authentication > Sign In / Providers > Facebook:** pode desativar. O Facebook agora é conectado só pelo administrador, por dentro do app.
+4. **Authentication > Configuração de URL:** *Site URL* = endereço do app. Em *Redirect URLs*, adicione `https://SEU-APP.vercel.app/auth/callback` (e `http://localhost:3000/auth/callback` para testes no computador).
 
-### 2. App do Meta "Alertas de Tráfego" (o mesmo do token da planilha)
-1. developers.facebook.com > seu app > **Adicionar produto > Login do Facebook**.
-2. Em **Login do Facebook > Configurações > URIs de redirecionamento do OAuth válidos**, cole a Callback URL copiada no Supabase (passo 1.3) e salve.
-3. Se o app for do tipo Empresa e só oferecer **Login do Facebook para Empresas**: crie uma configuração com *Token de acesso do usuário* e a permissão `ads_read`, e coloque o ID dela em `NEXT_PUBLIC_META_CONFIG_ID`.
-4. Uso só da equipe: deixe o app em **modo de desenvolvimento** e adicione cada pessoa em **Funções do app > Testadores** (ela precisa aceitar o convite). Assim não precisa de Análise do App da Meta. Quem não tem função no app não consegue entrar.
+### 2. Google Cloud (login com Google)
+1. console.cloud.google.com, com o e-mail do Workspace da agência: crie um projeto (por exemplo, "Alertas de Tráfego").
+2. **APIs e serviços > Tela de consentimento OAuth** (ou "Google Auth Platform"): tipo **Externo** (os gestores usam Gmail comum). Nome do app, e-mail de suporte e logo da agência. Escopos: só `email`, `profile` e `openid`, que não precisam de análise do Google. Publique o app (status "Em produção").
+3. **Credenciais > Criar credenciais > ID do cliente OAuth > Aplicativo da Web.** Em *URIs de redirecionamento autorizados*, cole a Callback URL do Supabase. Copie o ID e a chave secreta para o Supabase (passo 1.2).
 
-### 3. Rodar no computador
+### 3. App do Meta "Alertas de Tráfego"
+1. **Login do Facebook (para Empresas) > Configurações > URIs de redirecionamento do OAuth válidos:** adicione `https://SEU-APP.vercel.app/api/meta/retorno`. A Callback URL antiga do Supabase pode ficar ou sair.
+2. O app pode continuar em modo de desenvolvimento: só o administrador conecta o Facebook, e ele já tem função no app.
+
+### 4. Variáveis (Vercel ou `.env.local`)
+Veja `.env.example`. Além das do Supabase e do Meta, preencha `ADMIN_EMAILS` com o seu e-mail do Google e `META_CONFIG_ID` com o ID da configuração do Login do Facebook para Empresas (`1140099635553058`).
+
+### 5. Primeiro uso
+1. Entre com o Google usando o e-mail de `ADMIN_EMAILS`: você cai na Visão geral como administrador.
+2. **Contas > Conectar Meta**, depois **Importar contas do Meta**.
+3. Peça para os heads e gestores entrarem com o Google. Eles aparecem em **Pessoas** como "aguardando acesso". Defina os heads; depois os heads colocam os gestores na equipe (ou você mesmo faz).
+4. Em **Contas**, passe cada conta para um head; o head escolhe o gestor.
+
+## Rodar e verificar
 ```bash
-cd app
-cp .env.example .env.local   # preencha os valores
 npm install
-npm run dev                  # http://localhost:3000
-```
-
-### 4. Publicar (Vercel)
-Importe o repositório na Vercel com **Root Directory = `app`** e cadastre as mesmas variáveis do `.env.local`.
-
-## Verificações
-```bash
-npm test           # regras de saldo/status portadas da planilha
+npm run dev          # http://localhost:3000
+npm test             # regras de permissão e de saldo
 npm run typecheck
 npm run build
 ```
-
-## Próximas etapas
-Veja `ROADMAP.md`.
