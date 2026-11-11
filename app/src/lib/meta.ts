@@ -4,6 +4,8 @@ import { supabaseAdmin } from '@/lib/supabase/admin';
 import type { ContaMeta } from '@/lib/saldo';
 
 const versao = () => process.env.META_API_VERSION || 'v23.0';
+// Só para testes locais (Meta falso); em produção fica sempre o endereço oficial.
+const GRAPH = process.env.META_GRAPH_URL || 'https://graph.facebook.com';
 
 export class ErroMeta extends Error {
   constructor(mensagem: string, public codigo?: number) { super(mensagem); }
@@ -20,7 +22,7 @@ async function buscarJson<T>(url: string): Promise<T> {
 
 export function graph<T>(caminho: string, token: string, params: Record<string, string | number> = {}) {
   const qs = new URLSearchParams({ ...Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)])), access_token: token });
-  return buscarJson<T>(`https://graph.facebook.com/${versao()}/${caminho}?${qs}`);
+  return buscarJson<T>(`${GRAPH}/${versao()}/${caminho}?${qs}`);
 }
 
 export async function graphTodos<T>(caminho: string, token: string, params: Record<string, string | number> = {}) {
@@ -47,7 +49,7 @@ export async function trocarCodigo(code: string, redirectUri: string) {
   const qs = new URLSearchParams({
     client_id: env('META_APP_ID'), client_secret: env('META_APP_SECRET'), redirect_uri: redirectUri, code,
   });
-  const r = await buscarJson<{ access_token: string }>(`https://graph.facebook.com/${versao()}/oauth/access_token?${qs}`);
+  const r = await buscarJson<{ access_token: string }>(`${GRAPH}/${versao()}/oauth/access_token?${qs}`);
   return r.access_token;
 }
 
@@ -60,7 +62,7 @@ export async function tokenLongo(tokenCurto: string) {
     fb_exchange_token: tokenCurto,
   });
   const r = await buscarJson<{ access_token: string; expires_in?: number }>(
-    `https://graph.facebook.com/${versao()}/oauth/access_token?${qs}`);
+    `${GRAPH}/${versao()}/oauth/access_token?${qs}`);
   return { token: r.access_token, expiraEm: r.expires_in ? new Date(Date.now() + r.expires_in * 1000) : null };
 }
 

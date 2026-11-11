@@ -3,7 +3,8 @@
 import { revalidatePath } from 'next/cache';
 import { exigirPapel } from '@/lib/sessao';
 import { conexaoMetaDaAgencia, listarContas, listarPessoas } from '@/lib/dados';
-import { atribuirConta } from '@/lib/permissoes';
+import { atribuirConta, podeInscrever } from '@/lib/permissoes';
+import { verificarTudo } from '@/lib/verificacao';
 import { listarContasMeta, ErroMeta } from '@/lib/meta';
 import { supabaseAdmin } from '@/lib/supabase/admin';
 import { voltar } from '@/lib/voltar';
@@ -50,4 +51,29 @@ export async function importarContasMeta() {
   const novas = linhas.filter((l) => !antes.has(l.id_externo)).length;
   revalidatePath('/', 'layout');
   voltar('/contas', 'ok', `${lista.length} contas encontradas no Meta, ${novas} nova${novas === 1 ? '' : 's'}.`);
+}
+
+/** Liga ou desliga "receber avisos" de uma conta para o administrador ou head logado. */
+export async function alternarInscricao(form: FormData) {
+  const eu = await exigirPapel('administrador', 'head');
+  const conta = (await listarContas()).find((c) => c.id === form.get('conta'));
+  if (!conta || !podeInscrever(eu, conta)) voltar('/contas', 'erro', 'Você não pode acompanhar essa conta.');
+  const db = supabaseAdmin();
+  if (form.get('ligar') === '1') {
+    await db.from('inscricoes').upsert({ pessoa_id: eu.id, conta_id: conta.id }, { onConflict: 'pessoa_id,conta_id', ignoreDuplicates: true });
+  } else {
+    await db.from('inscricoes').delete().eq('pessoa_id', eu.id).eq('conta_id', conta.id);
+  }
+  revalidatePath('/', 'layout');
+  voltar('/contas', 'ok', form.get('ligar') === '1' ? `Você vai receber os avisos de ${conta.nome}.` : `Você não recebe mais os avisos de ${conta.nome}.`);
+}
+
+/** Roda a verificação agora e mostra os avisos novos na hora (sem esperar o próximo horário). */
+export async function verificarAgora() {
+  await exigirPapel('administrador');
+  const r = await verificarTudo({ imediato: true });
+  revalidatePath('/', 'layout');
+  if (r.parou) voltar('/contas', 'erro', r.parou);
+  const erros = r.erros.length ? ` ${r.erros.length} conta(s) com erro: ${r.erros.slice(0, 2).map((e) => `${e.conta} (${e.erro})`).join('; ')}.` : '';
+  voltar('/contas', r.erros.length ? 'erro' : 'ok', `${r.contas} conta(s) verificadas, ${r.novos} aviso(s) novo(s).${erros}`);
 }

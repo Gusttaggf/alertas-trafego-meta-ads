@@ -7,7 +7,10 @@ App da Agência Estrategista para a equipe de tráfego, chamado **Gestor Estrate
 - **Login com Google** para todos. Quem entra pela primeira vez fica **aguardando acesso**. Os e-mails em `ADMIN_EMAILS` entram como administrador.
 - **Pessoas:** o administrador define quem é head e quem é gestor (e de qual equipe). O head coloca quem está aguardando como gestor da equipe dele e pode tirar gestores da equipe.
 - **Contas:** o administrador conecta o Meta (Facebook da conta mãe), importa as contas e passa cada uma para um head. O head escolhe o gestor.
-- **Visão geral** (administrador), **Minha equipe** (head), **Minhas contas** (gestor), **Configurações** (horários e limites dos avisos).
+- **Agenda de avisos:** semana + os três horários (07h, 12h, 16h). Avisos do Meta: saldo acabando, custo alto (com os criativos que puxam o custo), gasto acima do diário e ruim há 2 semanas (campanha, conjunto ou anúncio). Botão "Marcar como resolvido": resolvido não volta no mesmo dia.
+- **Quem recebe:** o gestor recebe os avisos das contas dele. Administrador e head escolhem em **Contas > Receber avisos** quais contas acompanhar (o head, só as da equipe).
+- **Verificação:** de hora em hora (agendador do Supabase chamando `/api/verificar`). O que é achado entre os horários aparece no próximo horário. O administrador tem o botão **Verificar agora** em Contas, que mostra os avisos na hora.
+- **Visão geral** (administrador) e **Minha equipe** (head) com as pendências de cada gestor por tipo; clicando no gestor, a agenda dele. **Configurações** com horários e limites.
 - Tema claro, escuro ou automático, com a identidade visual da agência.
 
 ## Segurança
@@ -49,11 +52,18 @@ Gratuito: não precisa ativar faturamento nem a avaliação gratuita (se aparece
 ### 4. Variáveis (Vercel ou `.env.local`)
 Veja `.env.example`. Além das do Supabase e do Meta, preencha `ADMIN_EMAILS` com o seu e-mail do Google e `META_CONFIG_ID` com o ID da configuração do Login do Facebook para Empresas (`1140099635553058`).
 
+### 4b. Banco da agenda e agendador
+1. **Supabase > SQL Editor:** rode `supabase/migrations/0003_agenda.sql`.
+2. **Vercel > Settings > Environment Variables:** crie `CRON_SECRET` (tipo Secret) com uma senha longa e aleatória (por exemplo, gere em um gerador de senhas, 32+ caracteres, só letras e números). Faça **Redeploy**.
+3. **Supabase > SQL Editor:** abra `supabase/agendador.sql`, troque o endereço do app e `COLE_AQUI_O_CRON_SECRET` pelo mesmo valor da Vercel, e rode. Ele liga as extensões `pg_cron` e `pg_net` e agenda a verificação para todo começo de hora.
+4. Para conferir: `select status_code, content, created from net._http_response order by created desc limit 5;` deve mostrar `200` e um resumo como `{"contas":3,"novos":2,"erros":[]}`.
+
 ### 5. Primeiro uso
 1. Entre com o Google usando o e-mail de `ADMIN_EMAILS`: você cai na Visão geral como administrador.
 2. **Contas > Conectar Meta**, depois **Importar contas do Meta**.
 3. Peça para os heads e gestores entrarem com o Google. Eles aparecem em **Pessoas** como "aguardando acesso". Defina os heads; depois os heads colocam os gestores na equipe (ou você mesmo faz).
-4. Em **Contas**, passe cada conta para um head; o head escolhe o gestor.
+4. Em **Contas**, passe cada conta para um head; o head escolhe o gestor. Marque **Receber avisos** nas contas que você quer acompanhar.
+5. Clique em **Verificar agora** para ver os primeiros avisos na agenda.
 
 ## Rodar e verificar
 ```bash

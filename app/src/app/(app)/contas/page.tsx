@@ -1,18 +1,21 @@
 import Aviso from '@/components/Aviso';
 import SelectAuto from '@/components/SelectAuto';
 import { exigirPapel } from '@/lib/sessao';
-import { conexaoMetaDaAgencia, listarContas, listarPessoas } from '@/lib/dados';
+import { conexaoMetaDaAgencia, listarContas, listarInscricoes, listarPessoas } from '@/lib/dados';
 import { contasVisiveis } from '@/lib/permissoes';
-import { importarContasMeta, salvarConta } from './acoes';
+import { alternarInscricao, importarContasMeta, salvarConta, verificarAgora } from './acoes';
+import CheckAuto from '@/components/CheckAuto';
 
 const PLAT = { meta: 'Meta', google: 'Google Ads' } as const;
+const horaBR = (iso: string) => new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 const dataBR = (iso: string) => new Date(iso).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
 export default async function Contas({ searchParams }: { searchParams: Promise<{ ok?: string; erro?: string }> }) {
   const eu = await exigirPapel('administrador', 'head');
   const { ok, erro } = await searchParams;
   const admin = eu.papel === 'administrador';
-  const [todas, pessoas, conexao] = await Promise.all([listarContas(), listarPessoas(), admin ? conexaoMetaDaAgencia() : null]);
+  const [todas, pessoas, conexao, inscricoes] = await Promise.all([listarContas(), listarPessoas(), admin ? conexaoMetaDaAgencia() : null, listarInscricoes(eu.id)]);
+  const inscritas = new Set(inscricoes.map((i) => i.conta_id));
   const contas = contasVisiveis(eu, todas);
   const heads = pessoas.filter((p) => p.papel === 'head');
   const gestoresDe = (headId: string | null) => pessoas.filter((p) => p.papel === 'gestor' && p.head_id === headId);
@@ -34,6 +37,7 @@ export default async function Contas({ searchParams }: { searchParams: Promise<{
         </div>
       </div>
       <Aviso ok={ok} erro={erro} />
+      {admin && conexao?.ultimo_erro && <div className="aviso erro">{conexao.ultimo_erro}</div>}
 
       {admin && (
         <div className="panel pad" style={{ paddingBlock: 4 }}>
@@ -45,6 +49,7 @@ export default async function Contas({ searchParams }: { searchParams: Promise<{
             </div>
             <div className="acoes">
               {conexao && <form action={importarContasMeta}><button className="btn" type="submit">Importar contas do Meta</button></form>}
+              {conexao && <form action={verificarAgora}><button className="btn" type="submit" title="Verifica as contas agora e mostra os avisos novos na hora">Verificar agora</button></form>}
               <a className={`btn ${conexao ? '' : 'primary'}`} href="/api/meta/conectar">{conexao ? 'Reconectar Meta' : 'Conectar Meta'}</a>
             </div>
           </div>
@@ -59,7 +64,7 @@ export default async function Contas({ searchParams }: { searchParams: Promise<{
         <div className="vazio">{admin ? 'Nenhuma conta ainda. Conecte o Meta e clique em "Importar contas do Meta".' : 'O administrador ainda não passou contas para a sua equipe.'}</div>
       ) : (
         <div className="panel"><div className="tscroll"><table>
-          <thead><tr><th>Cliente</th><th>Plataforma</th><th>ID da conta</th>{admin && <th>Head</th>}<th>Gestor responsável</th></tr></thead>
+          <thead><tr><th>Cliente</th><th>Plataforma</th><th>ID da conta</th>{admin && <th>Head</th>}<th>Gestor responsável</th><th>Receber avisos</th><th>Última verificação</th></tr></thead>
           <tbody>
             {contas.map((c) => {
               const gs = gestoresDe(c.head_id);
@@ -88,6 +93,13 @@ export default async function Contas({ searchParams }: { searchParams: Promise<{
                       </SelectAuto>
                     </form>
                   </td>
+                  <td>
+                    <form action={alternarInscricao}>
+                      <input type="hidden" name="conta" value={c.id} />
+                      <CheckAuto nome="ligar" marcado={inscritas.has(c.id)} rotulo="Eu recebo" />
+                    </form>
+                  </td>
+                  <td className="muted pequeno">{c.ultimo_erro ? <span className="late" title={c.ultimo_erro}>Erro</span> : c.ultima_verificacao ? horaBR(c.ultima_verificacao) : '—'}</td>
                 </tr>
               );
             })}
