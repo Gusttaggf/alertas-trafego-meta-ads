@@ -16,12 +16,12 @@ Versão em aplicativo do sistema da planilha, para uso da equipe. A planilha (`.
 ### 1. Supabase
 1. Crie um projeto em supabase.com.
 2. **SQL Editor**: rode `supabase/migrations/0001_meta_conexoes.sql`.
-3. **Authentication > Sign In / Providers > Facebook**: ative e cole o App ID e a Chave secreta do app do Meta. Copie a *Callback URL* (`https://SEU-PROJETO.supabase.co/auth/v1/callback`).
+3. **Authentication > Sign In / Providers > Facebook** (no Supabase): ative e cole o **ID do app** e a **Chave secreta do app**, que ficam no Meta em developers.facebook.com > seu app > Configurações do app > Básico. Nessa mesma tela do Supabase, copie a *Callback URL* (`https://SEU-PROJETO.supabase.co/auth/v1/callback`): ela vai no passo 2.2, no Meta. Salve.
 4. **Authentication > URL Configuration**: Site URL = endereço do app; em Redirect URLs adicione `http://localhost:3000/auth/callback` e `https://SEU-APP.vercel.app/auth/callback`.
 
 ### 2. App do Meta "Alertas de Tráfego" (o mesmo do token da planilha)
 1. developers.facebook.com > seu app > **Adicionar produto > Login do Facebook**.
-2. Em **URIs de redirecionamento do OAuth válidos**, cole a Callback URL do Supabase.
+2. Em **Login do Facebook > Configurações > URIs de redirecionamento do OAuth válidos**, cole a Callback URL copiada no Supabase (passo 1.3) e salve.
 3. Se o app for do tipo Empresa e só oferecer **Login do Facebook para Empresas**: crie uma configuração com *Token de acesso do usuário* e a permissão `ads_read`, e coloque o ID dela em `NEXT_PUBLIC_META_CONFIG_ID`.
 4. Uso só da equipe: deixe o app em **modo de desenvolvimento** e adicione cada pessoa em **Funções do app > Testadores** (ela precisa aceitar o convite). Assim não precisa de Análise do App da Meta. Quem não tem função no app não consegue entrar.
 
