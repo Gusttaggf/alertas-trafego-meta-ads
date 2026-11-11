@@ -1,17 +1,34 @@
 # Roteiro do app
 
-Público: só a equipe do Gustavo (um time, sem cobrança, sem várias empresas).
+Público: só a equipe da agência (sem cobrança, sem várias empresas).
 
-| Etapa | O que entra | Substitui na planilha |
-|---|---|---|
-| 1. Login com Facebook ✅ | Entrar com o Facebook, token de 60 dias guardado no servidor, lista de contas com situação e saldo | Menu "Salvar token do Meta" |
-| 2. Clientes e equipe | Tabelas `clientes`, `equipe`, `configuracoes` no Supabase; telas de cadastro; importar contas do Meta; migrar os dados atuais da planilha | Abas Clientes, Equipe e Configurações |
-| 3. Verificação de hora em hora | Portar `verificarConta_`, orçamentos e criativos para TypeScript (com os testes de `../tests`); rodar por Supabase Cron + Edge Function ou Vercel Cron; gravar `historico_alertas` | Gatilho do Apps Script e aba Histórico |
-| 4. Envio | E-mail (Resend ou similar) e Telegram com vínculo por `t.me/<bot>?start=<código>` via webhook (no lugar do getUpdates de 5 em 5 min) | `enviarPara_`, `processarVinculos_` |
-| 5. Painel | Saldo, gasto médio 7d, dias restantes, gasto de hoje e situação por conta; histórico filtrável | Colunas J–O de Clientes |
-| 6. Desligar a planilha | Rodar os dois em paralelo alguns dias, comparar alertas, desativar o gatilho do Apps Script | — |
+Protótipo clicável (dados de exemplo): https://claude.ai/artifact/W1cnoV9VBHqLVhj6Fx3rGu
+
+## Como o app funciona (decidido com o Gustavo em 11/11/2026)
+
+- **Agenda:** cada gestor vê os avisos do dia em três horários, **07:00, 12:00 e 16:00**, com navegação pela semana.
+- **Verificação:** o sistema consulta o Meta **de hora em hora**, mas só dispara os avisos nos três horários (junta o que achou desde o horário anterior).
+- **Alertas:** saldo acabando, custo por resultado alto (venda, mensagem, lead) e gasto do dia acima do orçamento diário. "Conta com problema" e "gasto sem resultado": decidir depois.
+- **Resolvido:** o gestor marca cada aviso como resolvido. Se resolveu, aquela conta não recebe o mesmo tipo de aviso de novo nos horários seguintes do mesmo dia.
+- **Notificação no celular:** o gestor vê os avisos no app e recebe notificação no celular nos horários (push do app instalado na tela inicial; Telegram como alternativa).
+- **Papéis:**
+  - **Administrador:** controle total (pessoas, papéis, equipes, contas, configurações).
+  - **Head:** manda na equipe dele (cada gestor pertence a um único head), distribui as contas entre os gestores, vê as pendências da equipe por cima e o detalhe ao clicar no gestor. Não recebe avisos.
+  - **Gestor:** recebe e resolve os avisos das contas pelas quais é responsável.
+- **Visual:** seguir a identidade visual da agência (Canva).
+
+## Etapas
+
+| Etapa | O que entra |
+|---|---|
+| 1. Login com Facebook ✅ | Entrar com o Facebook, token de 60 dias guardado no servidor, lista de contas |
+| 2. Pessoas, equipes e contas | Tabelas de pessoas (papel, head), contas (gestor responsável) e configurações; telas de Pessoas, Distribuir contas e Configurações; RLS por papel |
+| 3. Verificação e avisos | Checagem de hora em hora (Supabase Cron), regras portadas do `.gs` com testes, tabela de avisos com horário e status (pendente/resolvido) |
+| 4. Agenda e visão do head | Agenda do gestor (semana + 07/12/16h), cartões por gestor para o head, visão geral do administrador |
+| 5. Notificação no celular | App instalável (PWA) com push nos três horários |
+| 6. Desligar a planilha | Rodar em paralelo, comparar e desativar o gatilho do Apps Script |
 
 ## Decisões em aberto
-- **Qual token a verificação automática usa?** Opção simples: o token da "conta mãe" (o Facebook do Gustavo) salvo no login, que vence em 60 dias e avisa antes. Opção definitiva: token de usuário do sistema da BM, que não expira.
-- **Quem pode entrar:** hoje, quem é Testador no app do Meta. Na etapa 2, ligar o login à aba Equipe (só entra quem está cadastrado e ativo; papel define o que vê).
-- **Lovini:** as contas 1422830469231196 e 180387504 continuam com erro #200 até a BM da Lovini autorizar o app.
+- "Conta com problema" e "gasto sem resultado" entram ou não.
+- Token da verificação automática: o do login (vence em 60 dias) ou token de usuário do sistema da BM (não expira).
+- Contas da Lovini continuam com erro #200 até a BM autorizar o app.
