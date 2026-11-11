@@ -19,7 +19,8 @@ export async function proxy(request: NextRequest) {
     },
   );
   const { data: { user } } = await supabase.auth.getUser();
-  const publica = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/auth');
+  // /api/verificar é chamado pelo agendador (sem login) e se protege com o CRON_SECRET.
+  const publica = ['/login', '/auth', '/api/verificar'].some((p) => request.nextUrl.pathname.startsWith(p));
   if (!user && !publica) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';

@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  mudarPapel, atribuirConta, contasVisiveis, pessoasVisiveis, paginaInicial, ehEmailDeAdministrador,
+  mudarPapel, atribuirConta, recebeAvisos, podeInscrever, podeResolver, contasVisiveis, pessoasVisiveis, paginaInicial, ehEmailDeAdministrador,
   type Pessoa, type Conta,
 } from '../src/lib/permissoes.ts';
 
@@ -92,7 +92,22 @@ test('cada papel vê só o que é dele', () => {
 
 test('página inicial e e-mails de administrador', () => {
   assert.equal(paginaInicial(null), '/aguardando');
-  assert.equal(paginaInicial('gestor'), '/minhas-contas');
+  assert.equal(paginaInicial('gestor'), '/agenda');
   assert.ok(ehEmailDeAdministrador(' Gustavo@Agencia.com ', 'outro@x.com, gustavo@agencia.com'));
   assert.equal(ehEmailDeAdministrador('a@b.com', undefined), false);
+});
+
+test('avisos: gestor recebe as dele; administrador e head recebem o que escolherem', () => {
+  const c = conta('h1', 'g1');
+  assert.ok(recebeAvisos(g1, c, false));
+  assert.equal(recebeAvisos(adm, c, false), false);
+  assert.ok(recebeAvisos(adm, c, true));
+  assert.ok(podeInscrever(adm, conta('h2', null)));
+  assert.ok(podeInscrever(h1, c));
+  assert.equal(podeInscrever(h1, conta('h2', null)), false);
+  assert.equal(podeInscrever(g1, c), false);
+  assert.ok(podeResolver(h1, c, false));
+  assert.ok(podeResolver(adm, c, false));
+  assert.equal(podeResolver(g2, c, false), false);
+  assert.equal(podeResolver(h2, c, false), false);
 });

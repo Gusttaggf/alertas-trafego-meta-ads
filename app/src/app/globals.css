@@ -122,3 +122,45 @@ select, input[type="text"], input[type="time"], input[type="number"], input[type
   .selo { display: none; }
   main { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 }
+
+/* Agenda */
+.week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.day { text-decoration: none; color: var(--ink); border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 4px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.day .dw { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.day .dn { font-family: var(--f-display); font-size: 20px; font-weight: 600; }
+.day .dots { display: flex; gap: 3px; height: 8px; align-items: center; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+.day[aria-current="date"] { border-color: var(--accent-text); box-shadow: inset 0 0 0 1px var(--accent-text); }
+.day.hoje .dn { color: var(--accent-text); }
+.day.futuro { opacity: .55; }
+.navsemana { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; }
+.slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: start; }
+.slot { background: var(--surface-2); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.slot-h { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.slot-h .hr { font-family: var(--f-display); font-size: 22px; font-weight: 700; }
+.slot-h .st { font-size: 12px; color: var(--muted); }
+.card { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--c); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.card.feito { opacity: .62; }
+.t-saldo { --c: var(--saldo); --cs: var(--saldo-soft); }
+.t-custo { --c: var(--custo); --cs: var(--custo-soft); }
+.t-orcamento { --c: var(--orc); --cs: var(--orc-soft); }
+.t-ruim { --c: var(--desemp); --cs: var(--desemp-soft); }
+.chip { font-family: var(--f-display); align-self: flex-start; background: var(--cs); color: var(--c); font-size: 11px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; padding: 2px 8px; border-radius: 6px; }
+.card h3 { font-size: 15px; overflow-wrap: anywhere; }
+.card p { margin: 0; font-size: 13px; overflow-wrap: anywhere; }
+.card .big { font-family: var(--f-display); font-size: 18px; font-weight: 600; }
+.card .row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.card ul { margin: 0; padding-left: 18px; font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 2px; }
+.nivel { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.semanas { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 12px; }
+.semanas b { font-weight: 600; color: var(--c); }
+.bars { display: flex; flex-direction: column; gap: 6px; }
+.bar { display: grid; grid-template-columns: 124px minmax(0,1fr) 22px; gap: 8px; align-items: center; font-size: 12px; }
+.bar .track { height: 8px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+.bar .fill { display: block; height: 100%; border-radius: 4px; background: var(--c); }
+.check { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+@media (max-width: 860px) {
+  .slots { grid-template-columns: minmax(0, 1fr); }
+  .day { padding: 6px 2px; }
+  .day .dn { font-size: 16px; }
+}

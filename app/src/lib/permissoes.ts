@@ -18,6 +18,8 @@ export type Conta = {
   nome: string;
   head_id: string | null;
   gestor_id: string | null;
+  ultima_verificacao?: string | null;
+  ultimo_erro?: string | null;
 };
 
 export type Resultado<T> = { ok: true; valor: T } | { ok: false; erro: string };
@@ -142,11 +144,29 @@ export function pessoasVisiveis(ator: Pessoa, pessoas: Pessoa[]): Pessoa[] {
   return [];
 }
 
+// ---------------- Avisos ----------------
+
+/** Quem recebe os avisos de uma conta: o gestor responsável e quem se inscreveu nela. */
+export function recebeAvisos(p: Pessoa, conta: Conta, inscrito: boolean): boolean {
+  if (!p.papel) return false;
+  return conta.gestor_id === p.id || inscrito;
+}
+
+/** Administrador e head escolhem de quais contas receber avisos (o head, só das contas da equipe). */
+export function podeInscrever(p: Pessoa, conta: Conta): boolean {
+  return p.papel === 'administrador' || (p.papel === 'head' && conta.head_id === p.id);
+}
+
+/** Quem pode marcar um aviso como resolvido: quem recebe, o head da conta e o administrador. */
+export function podeResolver(p: Pessoa, conta: Conta, inscrito: boolean): boolean {
+  return p.papel === 'administrador' || (p.papel === 'head' && conta.head_id === p.id) || recebeAvisos(p, conta, inscrito);
+}
+
 /** Para onde cada papel vai ao abrir o app. */
 export function paginaInicial(papel: Papel): string {
   if (papel === 'administrador') return '/visao-geral';
   if (papel === 'head') return '/equipe';
-  if (papel === 'gestor') return '/minhas-contas';
+  if (papel === 'gestor') return '/agenda';
   return '/aguardando';
 }
 
