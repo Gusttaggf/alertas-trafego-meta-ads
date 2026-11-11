@@ -15,6 +15,8 @@ Cada pessoa recebe só os alertas das contas em que é responsável e só os tip
 1. Na planilha, Extensões > Apps Script: cole `src/AlertasTrafego.gs` e salve.
 2. Recarregue a planilha e use o menu **Alertas de Tráfego**: salvar token do Meta, (opcional) token do bot do Telegram, testar e ativar a verificação automática.
 
+Aplicativo em construção (Next.js + Supabase): veja `app/README.md`.
+
 Detalhes do projeto e decisões tomadas: veja `CLAUDE.md`.
 
 ## Testes
