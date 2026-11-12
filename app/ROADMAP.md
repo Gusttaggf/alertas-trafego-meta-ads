@@ -40,6 +40,11 @@ Protótipo clicável (dados de exemplo): https://claude.ai/artifact/W1cnoV9VBHqL
 - **Token de desenvolvedor:** na conta de administrador (MCC) do Google Ads, em Administrador > Central de API. O Google analisa o pedido e pode levar alguns dias.
 - **Projeto no Google Cloud** com a Google Ads API ativada e um cliente OAuth (ID e chave secreta) para o administrador conectar a conta.
 
+## Próxima sessão (combinado em 12/11/2026)
+- **Antes de tudo:** o Gustavo ainda precisa fazer o merge do pull request com a correção "administrador passa conta sem head direto para gestor sem equipe" (commit 91317e8). Não tem migração nova.
+- **Melhoria pedida:** ao ativar as notificações num aparelho, mandar na hora um resumo dos avisos pendentes de hoje (hoje os avisos que ficaram visíveis antes da ativação já saem marcados como notificados e não chegam).
+- **Opções a escolher depois:** Google Ads pelo login de cada pessoa (pedir token de desenvolvedor na MCC); botão "Convidar pessoa" com papel e equipe; liberar o login do Google para a equipe toda (página de privacidade + publicar); painel das contas (saldo, gasto, dias restantes); "conta com problema" e "gasto sem resultado".
+
 ## Situação atual: versão de apresentação
 O Gustavo está montando o app nas contas pessoais dele (Gmail, Supabase, Vercel, Google Cloud, app do Meta) para apresentar à agência. Se aprovado, passa tudo para o administrador da agência:
 - **Google Cloud:** adicionar o administrador como Proprietário do projeto (IAM) ou ele cria um cliente OAuth próprio e troca ID e chave secreta no Supabase.
