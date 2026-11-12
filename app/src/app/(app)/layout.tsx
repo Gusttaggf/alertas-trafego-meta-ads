@@ -2,6 +2,8 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import ItemMenu from '@/components/ItemMenu';
 import TemaToggle from '@/components/TemaToggle';
+import Notificacoes from '@/components/Notificacoes';
+import { chavesVapid } from '@/lib/push';
 import { pessoaAtual } from '@/lib/sessao';
 import { avisosDasContas, listarContas, listarInscricoes, listarPessoas } from '@/lib/dados';
 import { diaSP, somarDias } from '@/lib/tempo';
@@ -34,6 +36,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
         </div>
         {menu.map(([href, texto, n]) => <ItemMenu key={href} href={href} texto={texto} numero={n} />)}
         <TemaToggle inicial={tema} />
+        <Notificacoes chavePublica={(await chavesVapid()).publica} />
         <div className="who">
           <b>{eu.nome}</b>
           <span className="muted pequeno">{eu.email}</span>

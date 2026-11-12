@@ -1,10 +1,20 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { cookies } from 'next/headers';
 import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Gestor Estrategista',
   description: 'Agenda de avisos das contas de anúncio do Meta e do Google Ads para a equipe.',
+  applicationName: 'Gestor Estrategista',
+  appleWebApp: { capable: true, title: 'Gestor', statusBarStyle: 'black-translucent' },
+  icons: { icon: '/icones/favicon-48.png', apple: '/icones/apple-touch-icon.png' },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#570a0b',
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
 };
 
 export default async function Layout({ children }: { children: React.ReactNode }) {

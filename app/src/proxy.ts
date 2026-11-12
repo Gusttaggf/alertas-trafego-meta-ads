@@ -30,5 +30,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  // Arquivos públicos (logo, ícones, service worker, manifest) não passam pelo login.
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|sw\\.js|manifest\\.webmanifest|.*\\.(?:png|svg|ico|jpg|webp)$).*)'],
 };
