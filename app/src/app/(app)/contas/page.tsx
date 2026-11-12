@@ -87,8 +87,9 @@ export default async function Contas({ searchParams }: { searchParams: Promise<{
                   <td>
                     <form action={salvarConta}>
                       <input type="hidden" name="conta" value={c.id} />
-                      <SelectAuto name="gestor_id" defaultValue={c.gestor_id ?? ''} disabled={!c.head_id} aria-label={`Gestor de ${c.nome}`}>
-                        <option value="">{c.head_id ? (gs.length ? 'Escolher gestor' : 'Equipe sem gestores') : 'Escolha o head antes'}</option>
+                      <SelectAuto name="gestor_id" defaultValue={c.gestor_id ?? ''} disabled={!c.head_id && !admin} aria-label={`Gestor de ${c.nome}`}>
+                        <option value="">{c.head_id ? (gs.length ? 'Escolher gestor' : 'Equipe sem gestores')
+                          : admin ? (gs.length ? 'Gestor sem equipe' : 'Nenhum gestor sem equipe') : 'Escolha o head antes'}</option>
                         {gs.map((g) => <option key={g.id} value={g.id}>{g.nome}</option>)}
                       </SelectAuto>
                     </form>

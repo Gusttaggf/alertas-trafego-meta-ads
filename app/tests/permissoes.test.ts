@@ -72,6 +72,13 @@ test('administrador passa conta para head e gestor; trocar o head tira o gestor 
   assert.equal(atribuirConta(adm, conta('h1', null), { gestor_id: 'g2' }, todos).ok, false);
 });
 
+test('administrador passa conta sem head direto para gestor sem equipe', () => {
+  const solto = p('solto', 'gestor', null);
+  const r = atribuirConta(adm, conta(null, null), { gestor_id: 'solto' }, [...todos, solto]);
+  assert.deepEqual(r.ok && r.valor, { head_id: null, gestor_id: 'solto' });
+  assert.equal(atribuirConta(adm, conta(null, null), { gestor_id: 'g1' }, todos).ok, false); // g1 é da equipe h1
+});
+
 test('head escolhe gestor só da própria equipe e só nas contas dele', () => {
   assert.ok(atribuirConta(h1, conta('h1', null), { gestor_id: 'g1' }, todos).ok);
   assert.equal(atribuirConta(h1, conta('h1', null), { gestor_id: 'g2' }, todos).ok, false);
