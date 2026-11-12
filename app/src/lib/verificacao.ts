@@ -8,6 +8,7 @@ import {
   type Achado, type Insight, type Limites, type Orcamento,
 } from '@/lib/regras';
 import { diaSP, ddmm, horarioAtual, proximoHorario, somarDias } from '@/lib/tempo';
+import { notificarAvisosNovos } from '@/lib/push';
 
 type ContaAlvo = { id: string; id_externo: string; nome: string; ruim_verificado_em: string | null };
 
@@ -104,7 +105,7 @@ async function emLotes<T, R>(itens: T[], tamanho: number, fn: (t: T) => Promise<
   return out;
 }
 
-export type ResumoVerificacao = { contas: number; novos: number; erros: { conta: string; erro: string }[]; parou?: string };
+export type ResumoVerificacao = { contas: number; novos: number; erros: { conta: string; erro: string }[]; parou?: string; notificados?: number };
 
 /**
  * Verifica todas as contas do Meta que alguém recebe (gestor responsável ou inscrição).
@@ -156,5 +157,8 @@ export async function verificarTudo({ agora = new Date(), imediato = false } = {
     ? { ultimo_erro: 'O acesso ao Meta expirou ou foi revogado. Reconecte em Contas.', erro_em: agora.toISOString() }
     : { ultimo_erro: null, erro_em: null }).eq('user_id', conexao.user_id);
   if (tokenInvalido) resumo.parou = 'Acesso ao Meta expirado.';
+  // Avisos que ficaram visíveis agora (no horário 07h/12h/16h ou pelo "Verificar agora") vão para o celular.
+  try { resumo.notificados = (await notificarAvisosNovos(agora)).aparelhos; }
+  catch (e) { resumo.erros.push({ conta: 'Notificações', erro: (e as Error).message }); }
   return resumo;
 }

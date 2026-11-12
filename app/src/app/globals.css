@@ -164,3 +164,11 @@ select, input[type="text"], input[type="time"], input[type="number"], input[type
   .day { padding: 6px 2px; }
   .day .dn { font-size: 16px; }
 }
+
+/* Notificações no menu */
+.notif { padding: 12px 10px 0; display: flex; flex-direction: column; gap: 6px; }
+.notif .rotulo { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.notif .btn { justify-content: center; }
+.acoes-notif { display: flex; gap: 12px; }
+.link { border: 0; background: none; padding: 0; color: var(--accent-text); text-decoration: underline; font-size: 13px; }
+@media (max-width: 860px) { .notif { width: 100%; padding: 4px 0; } }

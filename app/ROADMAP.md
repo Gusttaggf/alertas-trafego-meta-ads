@@ -33,7 +33,7 @@ Protótipo clicável (dados de exemplo): https://claude.ai/artifact/W1cnoV9VBHqL
 | 3. Verificação e avisos ✅ | Checagem de hora em hora (Supabase Cron), regras portadas do `.gs` com testes, tabela de avisos com horário e status (pendente/resolvido) |
 | 4. Agenda e visão do head ✅ | Agenda do gestor (semana + 07/12/16h), cartões por gestor para o head, visão geral do administrador |
 | 4b. Google Ads | Conexão com a conta de administrador (MCC), importação das contas e os mesmos avisos usando a API do Google Ads |
-| 5. Notificação no celular | App instalável (PWA) com push nos três horários |
+| 5. Notificação no celular ✅ | App instalável (PWA) com push nos três horários |
 | 6. Desligar a planilha | Rodar em paralelo, comparar e desativar o gatilho do Apps Script |
 
 ## O que o Google Ads exige (fazer antes da etapa 4b)

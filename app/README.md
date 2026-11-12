@@ -10,6 +10,7 @@ App da Agência Estrategista para a equipe de tráfego, chamado **Gestor Estrate
 - **Agenda de avisos:** semana + os três horários (07h, 12h, 16h). Avisos do Meta: saldo acabando, custo alto (com os criativos que puxam o custo), gasto acima do diário e ruim há 2 semanas (campanha, conjunto ou anúncio). Botão "Marcar como resolvido": resolvido não volta no mesmo dia.
 - **Quem recebe:** o gestor recebe os avisos das contas dele. Administrador e head escolhem em **Contas > Receber avisos** quais contas acompanhar (o head, só as da equipe).
 - **Verificação:** de hora em hora (agendador do Supabase chamando `/api/verificar`). O que é achado entre os horários aparece no próximo horário. O administrador tem o botão **Verificar agora** em Contas, que mostra os avisos na hora.
+- **App no celular e notificações:** o app pode ser instalado na tela inicial (Android e iPhone) e manda **uma notificação por pessoa** quando os avisos de um horário ficam visíveis (07h, 12h, 16h ou pelo "Verificar agora"). Cada pessoa ativa no menu, em **Celular > Ativar notificações**. As chaves das notificações (VAPID) são criadas sozinhas e ficam no banco.
 - **Visão geral** (administrador) e **Minha equipe** (head) com as pendências de cada gestor por tipo; clicando no gestor, a agenda dele. **Configurações** com horários e limites.
 - Tema claro, escuro ou automático, com a identidade visual da agência.
 
@@ -57,6 +58,15 @@ Veja `.env.example`. Além das do Supabase e do Meta, preencha `ADMIN_EMAILS` co
 2. **Vercel > Settings > Environment Variables:** crie `CRON_SECRET` (tipo Secret) com uma senha longa e aleatória (por exemplo, gere em um gerador de senhas, 32+ caracteres, só letras e números). Faça **Redeploy**.
 3. **Supabase > SQL Editor:** abra `supabase/agendador.sql`, troque o endereço do app e `COLE_AQUI_O_CRON_SECRET` pelo mesmo valor da Vercel, e rode. Ele liga as extensões `pg_cron` e `pg_net` e agenda a verificação para todo começo de hora.
 4. Para conferir: `select status_code, content, created from net._http_response order by created desc limit 5;` deve mostrar `200` e um resumo como `{"contas":3,"novos":2,"erros":[]}`.
+
+### 4c. Notificações no celular
+1. **Supabase > SQL Editor:** rode `supabase/migrations/0004_notificacoes.sql`.
+2. Não precisa de variável nova. (Opcional: `VAPID_SUBJECT` com `mailto:seu-email` ou o endereço do app.)
+3. Cada pessoa, no celular:
+   - **Android (Chrome):** abra o app, toque em **Instalar o app** (ou menu ⋮ > Instalar app) e em **Ativar notificações**.
+   - **iPhone (iOS 16.4 ou mais novo):** abra no **Safari**, toque em **Compartilhar > Adicionar à Tela de Início**, abra o app **pelo ícone** e toque em **Ativar notificações**. Fora do app instalado, o iPhone não deixa receber.
+   - No computador também funciona (Chrome, Edge, Firefox).
+4. Ao ativar, chega uma notificação de teste. Depois, no menu, **Testar** manda outra.
 
 ### 5. Primeiro uso
 1. Entre com o Google usando o e-mail de `ADMIN_EMAILS`: você cai na Visão geral como administrador.
